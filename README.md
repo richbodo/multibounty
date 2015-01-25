@@ -17,7 +17,7 @@ Many different possibilities exist for more comple use cases and workflows.  The
 
 The simplest workflows we imagine are included below in use cases 1 and 2.
 
-![alt tag](http://github.com/richbodo/multibounty/blob/master/images/MultiBounty_Simple_UseCases.png)
+![Simple Use Cases](./images/MultiBounty_Simple_UseCases.png)
 
 This was created as a blockchainu midterm project.
 
