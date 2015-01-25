@@ -1,7 +1,7 @@
 # multibounty
 #MultiSig Bounty Library
 
-Provides library and exampes that solve the following problem:
+Provides library and exampes that use the bitcoin blockchain to solve the following problem:
 
 You are an author of some code or other work on github.  You want to incentivize people to do work, such as fix bugs in code, or supply excellent edits to documentation.
 
