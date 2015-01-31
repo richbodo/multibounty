@@ -17,9 +17,9 @@ You are an author of some code or other work on github.  You want to incentivize
 
 In the first step, the Bounty could be multiparty (many people chip in to the award, some number need to be in agreement to present it).  
 
-In the second step, the Decision to award a bounty, can be complex, involving voting, test driven development, handoff of copyright, and more.  
+In the second step, the Decision to award a bounty, can be complex, involving multiple parties, voting, test driven development, handoff of copyright, and more.  The bounty could also be restricted to a list of individuals (or even just to the author).
 
-In the third  setp, the award transaction might be given partially to many submissions that all contribute some value.  
+In the third  setep, the award transaction might be given partially to many submissions that all contribute some value.  
 
 Finally, the underlying services for blockchain manipulation (blockcypher, block.io, ethereum, etc) and decision making (github, travis.ci) could be abstracted.  We'll just start simple, though.
 
