@@ -1,7 +1,7 @@
 # multibounty
 #MultiSig Bounty Library
 
-Provides library and exampes that use the bitcoin blockchain to solve the following problem:
+Provides library and examples that use the bitcoin blockchain to solve the following problem:
 
 You are an author of some code or other work on github.  You want to incentivize people to do work, such as fix bugs in code, or supply excellent edits to documentation.
 
@@ -13,7 +13,15 @@ You are an author of some code or other work on github.  You want to incentivize
 
 3) **Award Transaction:** Finally, an award must be made sending the output of the Bounty Transaction to the receiving address of the winner.
 
-**Future Work:** Many different possibilities exist for more complex use cases and workflows.  The Bounty could be multiparty (many people chip in to the award, some number need to be in agreement to present it).  The second step, the Decision to award a bounty, can be complex, involving voting, test driven development, and more.  The final setp, the award transaction, might be given partially to many submissions that all contribute some value.  Finally the underlying services for blockchain manipulation (blockcypher, block.io, ethereum, etc) and decision making (github, travis.ci) could be abstracted.  We'll just start simple, though.
+**Future Work:** Many different possibilities exist for more complex use cases and workflows.  
+
+In the first step, the Bounty could be multiparty (many people chip in to the award, some number need to be in agreement to present it).  
+
+In the second step, the Decision to award a bounty, can be complex, involving voting, test driven development, handoff of copyright, and more.  
+
+In the third  setp, the award transaction might be given partially to many submissions that all contribute some value.  
+
+Finally, the underlying services for blockchain manipulation (blockcypher, block.io, ethereum, etc) and decision making (github, travis.ci) could be abstracted.  We'll just start simple, though.
 
 Two of the simplest workflows we imagine are included below in use cases 1 and 2.
 
