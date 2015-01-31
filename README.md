@@ -19,7 +19,7 @@ In the first step, the Bounty could be multiparty (many people chip in to the aw
 
 In the second step, the Decision to award a bounty, can be complex, involving multiple parties, voting, test driven development, handoff of copyright, and more.  The bounty could also be restricted to a list of individuals (or even just to the author).
 
-In the third  setep, the award transaction might be given partially to many submissions that all contribute some value.  
+In the third  step, the award transaction might be given partially to many submissions that all contribute some value.  
 
 Finally, the underlying services for blockchain manipulation (blockcypher, block.io, ethereum, etc) and decision making (github, travis.ci) could be abstracted.  We'll just start simple, though.
 
