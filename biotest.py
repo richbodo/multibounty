@@ -27,10 +27,9 @@ class Secrets:
 #
 class Transaction:
     def __init__(self):
-        self.bounty_amount
-        self.editor_rcv_address
-        self.script_hash
-
+        self.bounty_amount=0
+        self.editor_rcv_address=0
+        self.script_hash=0
     def __str__(self):
         return ("tbd")
 
@@ -308,7 +307,7 @@ def main():
     mb_s = Secrets()
     mb_x = Transaction()
 
-    get_secrets(mb_secrets)
+    get_secrets(mb_s)
 
     #test_block_io(mb_secrets.bio_api_key,mb_secrets.bio_spin)
     #block_io_dtrust_example(mb_secrets.bio_doge_api_key, mb_secrets.bio_spin)
