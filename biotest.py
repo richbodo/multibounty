@@ -1,45 +1,100 @@
 # block.io test
 
 from block_io import BlockIo
+import ConfigParser
+import os
+import pdb
+import datetime
 
+class Secrets:
+    def __init__(self):
+        self.bio_spin=0
+        self.bio_api_key=0
+    def __str__(self):
+        return ("Block IO Secret Pin: " + str(self.bio_spin) + "\n"
+                "Block IO Account: " + str(self.bio_api_key) )
 
-def print_recurse_dicts(topdict):
-    i = 0
-    for k in topdict:
-        i = i + 1
-        v = topdict[k]
-        print "key " + str(i) + " is " + str(k)
-        print "val " + str(i) + " is " + str(v)
-        if isinstance(v, dict):
-            print "Val " + str(v) + " is a subdict"
-            for seq in print_recurse_dicts(v):
-                print "subdict: " + str(seq)
-                #yield seq
-        else:
-            print "Val " + str(v) + " is not a subdict"
+#
+# Recurse through the dicts and arrays that are nested in return values and print all the keys, values, and items flat
+#
+def print_flat(topthing):
+    if isinstance(topthing, dict):
+        for k in topthing:
+            v = topthing[k]
+            print str(k) + " : "
+            print_flat(v)
+    elif isinstance(topthing, list):
+        for k in topthing:
+            print_flat(k)
+    else:
+         print topthing
 
+def test_print_flat():
+    sample = {}
+    sample.update(
+        {u'status': u'success', u'data': {u'network': u'BTCTEST', u'addresses': [{u'pending_received_balance': u'0.00000000', u'available_balance': u'0.01000000', u'label': u'default', u'user_id': 0, u'address': u'2NAKxGtGEjwH2nyHovVjYKhyK7uDEGttMxf'}, {u'pending_received_balance': u'0.00000000', u'available_balance': u'0.00000000', u'label': u'addy_one', u'user_id': 1, u'address': u'2MxKK5PNE4wuB3VBrrNCZinykVijPfAxQfG'}, {u'pending_received_balance': u'0.00000000', u'available_balance': u'0.00000000', u'label': u'shibe1', u'user_id': 2, u'address': u'2N6DNQ4f4mQCvmRhZrKtPqW88hZPhMxp7jq'}, {u'pending_received_balance': u'0.00000000', u'available_balance': u'0.00000000', u'label': u'shibe2', u'user_id': 3, u'address': u'2N9JDPRF21kdUvgmzyioiUGpYPnuJ9orTmh'}, {u'pending_received_balance': u'0.00000000', u'available_balance': u'0.00000000', u'label': u'shibe3', u'user_id': 4, u'address': u'2MvcKnCQ83NdM1ZrBYTjjUdJyKJewHZGWv7'}]}}
+        )
+    print_flat(sample)
 
-block_io = BlockIo("620d-887e-8171-7db1", '18726354', 2)
+def test_block_io(bio_api_key, bio_spin):
+    block_io = BlockIo(bio_api_key, bio_spin, 2)
+    print_flat(block_io.get_my_addresses())
 
-# print the account balance
-balance = block_io.get_balance()
-print_recurse_dicts(balance)
+#
+# Create the award transaction
+#
+# def create_award_transaction():
+#     print "tbd create_award_xact"
+#
+# Test the award transaction
+#
+# def test_create_award_transaction():
+#     print "tbd create_award_xact"
+#
 
-print "why didn't that run?"
+#
+# Create the bounty transaction
+#
+# def create_bounty_transaction():
+#     print "tbd create_bounty_xact"
+#
+# Test the bounty transaction
+#
+# def create_bounty_transaction():
+#     print "tbd create_bounty_xact"
+#
 
-# block_io.get_current_price()
+def get_secrets(secrets):
+    status = 0
+    homedir = os.path.expanduser('~')
+    config_file = homedir + '/.multibounty/secrets.ini'
+    if (os.path.isfile(config_file) != True):
+        print "I quit. Expected your block_io secrets in an ini file here: " + config_file
+        exit()
+    config_handle = open(config_file, 'r')
 
+    parser = ConfigParser.SafeConfigParser()
+    try:
+        parser.read(config_file)
+    except ConfigParser.ParsingError, err:
+        print "Can't read from config file at all."
+        status = 1
+    try:
+        secrets.bio_spin = parser.get('blockio', 'author_spin', 0)
+        secrets.bio_api_key = parser.get('blockio', 'author_api_key', 0)
+    except:
+        print "Config file present but messed up."
+        status = 2
 
-#for value in mystery_stucture:
-#	if 
+    config_handle.close()
+    return status
 
-# print all addresses on this account
-#print block_io.get_my_addresses()
+def main():
+    multibounty_secrets = Secrets()
+    get_secrets(multibounty_secrets)
+    print str(multibounty_secrets)
+    test_block_io(multibounty_secrets.bio_api_key,multibounty_secrets.bio_spin)
 
-# get a new address
-# print block_io.get_new_address(label='addy_one')
+if __name__ == '__main__':
+    main()
 
-#print block_io.get_address_balance(labels='addy_one')
-
-# print the response of a withdrawal request
-# print block_io.withdraw(from_labels='default', to_label='', amount='50.0')
