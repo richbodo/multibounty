@@ -15,8 +15,8 @@ import sys
 class Secrets:
     def __init__(self):
         self.bio_spin=0
-        self.bio_api_key=0
-        self.bio_doge_api_key=0
+        self.bio_api_key=0 # this is the BTCTestNet
+        self.bio_doge_api_key=0 # DogeCoin Test Net
     def __str__(self):
         return ("Block IO Secret Pin: " + str(self.bio_spin) + "\n"
                 "Block IO Bitcoin API Key: " + str(self.bio_api_key) + "\n"
@@ -45,13 +45,14 @@ def test_print_flat():
     print_flat(sample)
 
 #
-# Block IO sanity check 
+# Block IO sanity check
 #
-def test_block_io(bio_api_key, bio_spin):
+def sanity_check_block_io(bio_api_key, bio_spin):
     block_io = BlockIo(bio_api_key, bio_spin, 2)
     print_flat(block_io.get_my_addresses())
+
 #
-# Straight up copy of the block.io dtrust.py example
+# Straight up copy of the block.io dtrust.py example - works!
 #
 def block_io_dtrust_example(bio_api_key, bio_spin):
     version = 2 # API version
@@ -160,12 +161,13 @@ def block_io_dtrust_example(bio_api_key, bio_spin):
 #
 # Create the award transaction
 #
-# Create a transaction awarding coin to a multisig script
+# Create a transaction awarding coin from AUTHOR to a SCRIPT
 # basically the first half of the dtrust example - using btctest
-# Input:
-# Return:
 #
-def create_award_transaction(bio_api_key, bio_spin):
+# Input: Block IO Platform API Key and Secret Pin and Bounty amount
+# Return: status
+#
+def create_bounty(bio_api_key, bio_spin, bounty_amount):
     version = 2 # API version
 
     # using bitcoin testnet
@@ -213,13 +215,13 @@ def create_award_transaction(bio_api_key, bio_spin):
 #
 # Create the bounty transaction
 #
-# Create a transaction awarding coin to the editor
+# Create a transaction awarding coin from SCRIPT to the EDITOR
 # Basically the second half of the dtrust example
 #
 # Input: editor_rcv_addy
-# Returns:
+# Returns: status
 #
-def create_bounty_transaction(editor_rcv_address):
+def award_bounty(editor_rcv_address):
     # create the withdrawal request
     six.print_("* Creating withdrawal request")
 
@@ -299,7 +301,12 @@ def main():
 
     #block_io_dtrust_example(mb_secrets.bio_doge_api_key, mb_secrets.bio_spin)
 
-    create_award_transaction(mb_secrets.bio_api_key, mb_secrets.bio_spin)
+    # Submit 1 BTC on BTC Test Net to a script
+    create_bounty(mb_secrets.bio_api_key, mb_secrets.bio_spin, 1)
+
+    # Award 1 BTC from Script to Editor
+    award_bounty(script_address, editor_rcv_address, 1)
+
 
 if __name__ == '__main__':
     main()
