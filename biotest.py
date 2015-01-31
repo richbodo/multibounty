@@ -11,7 +11,8 @@ import six # for python2 back-compatibility in printing messages using print as 
 import random
 import sys
 
-
+# Secret data from a restricted file
+#
 class Secrets:
     def __init__(self):
         self.bio_spin=0
@@ -20,9 +21,19 @@ class Secrets:
     def __str__(self):
         return ("Block IO Secret Pin: " + str(self.bio_spin) + "\n"
                 "Block IO Bitcoin API Key: " + str(self.bio_api_key) + "\n"
-                "Block IO Doge API Key: " + str(self.bio_doge_api_key) )
+                "Block IO Doge API Key: " + str(self.bio_doge_api_key)  )
 
+# For testing - data about transaction
 #
+class Transaction:
+    def __init__(self):
+        self.bounty_amount
+        self.editor_rcv_address
+        self.script_hash
+
+    def __str__(self):
+        return ("tbd")
+
 # Recurse through the dicts and arrays that are nested in return values and print all the keys, values, and items flat
 #
 def print_flat(topthing):
@@ -44,14 +55,13 @@ def test_print_flat():
         )
     print_flat(sample)
 
-#
+
 # Block IO sanity check
 #
 def sanity_check_block_io(bio_api_key, bio_spin):
     block_io = BlockIo(bio_api_key, bio_spin, 2)
     print_flat(block_io.get_my_addresses())
 
-#
 # Straight up copy of the block.io dtrust.py example - works!
 #
 def block_io_dtrust_example(bio_api_key, bio_spin):
@@ -157,9 +167,7 @@ def block_io_dtrust_example(bio_api_key, bio_spin):
     six.print_(">> Transaction ID:", response['data']['txid'])
     six.print_(">> Network Fee Incurred:", response['data']['network_fee'], response['data']['network'])
 
-
-#
-# Create the award transaction
+# Create the bounty
 #
 # Create a transaction awarding coin from AUTHOR to a SCRIPT
 # basically the first half of the dtrust example - using btctest
@@ -168,6 +176,7 @@ def block_io_dtrust_example(bio_api_key, bio_spin):
 # Return: status
 #
 def create_bounty(bio_api_key, bio_spin, bounty_amount):
+
     version = 2 # API version
 
     # using bitcoin testnet
@@ -212,8 +221,7 @@ def create_bounty(bio_api_key, bio_spin, bounty_amount):
     six.print_(">> Transaction ID:", response['data']['txid']) # you can check this on SoChain or any other blockchain explorer immediately
 
 
-#
-# Create the bounty transaction
+# Award the bounty
 #
 # Create a transaction awarding coin from SCRIPT to the EDITOR
 # Basically the second half of the dtrust example
@@ -263,10 +271,13 @@ def award_bounty(editor_rcv_address):
     six.print_(">> Transaction ID:", response['data']['txid'])
     six.print_(">> Network Fee Incurred:", response['data']['network_fee'], response['data']['network'])
 
-#
 # Grab the secrets out of an ini file so we don't have to check them into git!
 #
 def get_secrets(secrets):
+    """
+
+    :rtype : integer - zero for success
+    """
     status = 0
     homedir = os.path.expanduser('~')
     config_file = homedir + '/.multibounty/secrets.ini'
@@ -294,18 +305,23 @@ def get_secrets(secrets):
 
 def main():
 
-    mb_secrets = Secrets()
+    mb_s = Secrets()
+    mb_x = Transaction()
+
     get_secrets(mb_secrets)
 
     #test_block_io(mb_secrets.bio_api_key,mb_secrets.bio_spin)
-
     #block_io_dtrust_example(mb_secrets.bio_doge_api_key, mb_secrets.bio_spin)
 
+    # Setup Transaction
+    mb_x.bounty_amount = .0001
+    mb_x.editor_rcv_address = '2MzhYahdyuyH6Dv4MuKXxbX61rTgxBNFM4R'
+
     # Submit 1 BTC on BTC Test Net to a script
-    create_bounty(mb_secrets.bio_api_key, mb_secrets.bio_spin, 1)
+    create_bounty(mb_s.bio_api_key, mb_s.bio_spin, mb_x.bounty_amount)
 
     # Award 1 BTC from Script to Editor
-    award_bounty(script_address, editor_rcv_address, 1)
+    award_bounty(mb.script_hash, mb_x.editor_rcv_address)
 
 
 if __name__ == '__main__':
