@@ -31,7 +31,9 @@ class Transaction:
         self.editor_rcv_address=0
         self.script_hash=0
     def __str__(self):
-        return ("tbd")
+        return ("Transaction Bounty Amount: " + str(self.bounty_amount) + "\n"
+                "Editor Receive Address: " + str(self.editor_rcv_address) + "\n"
+                "Script Hash: " + str(self.script_hash) )
 
 # Recurse through the dicts and arrays that are nested in return values and print all the keys, values, and items flat
 #
@@ -168,8 +170,8 @@ def block_io_dtrust_example(bio_api_key, bio_spin):
 
 # Create the bounty
 #
-# Create a transaction awarding coin from AUTHOR to a SCRIPT
-# basically the first half of the dtrust example - using btctest
+# Create a transaction awarding coin from AUTHOR to a SCRIPT(must be signed by author and platform)
+# basically the first half of the dtrust example - using btctest - and 2 of 2 multisig
 #
 # Input: Block IO Platform API Key and Secret Pin and Bounty amount
 # Return: status
@@ -188,7 +190,7 @@ def create_bounty(bio_api_key, bio_spin, bounty_amount):
     print "The dtrust address label is: " + address_label
 
     # create the key objects for each private key
-    keys = [ BlockIo.Key.from_passphrase('alpha1alpha2alpha3alpha4'), BlockIo.Key.from_passphrase('alpha2alpha3alpha4alpha1'), BlockIo.Key.from_passphrase('alpha3alpha4alpha1alpha2'), BlockIo.Key.from_passphrase('alpha4alpha1alpha2alpha3') ]
+    keys = [ BlockIo.Key.from_passphrase('alpha3alpha4alpha1alpha2'), BlockIo.Key.from_passphrase('alpha4alpha1alpha2alpha3') ]
 
     pubkeys = []
 
@@ -196,12 +198,12 @@ def create_bounty(bio_api_key, bio_spin, bounty_amount):
         pubkeys.insert(len(pubkeys), key.pubkey_hex())
         six.print_(key.pubkey_hex())
 
-    # create a dTrust address that requires 4 out of 5 keys (4 of ours, 1 at Block.io).
+    # create a dTrust address that requires 2 out of 2 keys.
     # Block.io automatically adds +1 to specified required signatures because of its own key
 
-    print "* Creating a new 4 of 5 MultiSig address for BTCTEST"
+    print "* Creating a new 2 of 2 MultiSig address for BTCTEST"
     six.print_(','.join(str(x) for x in pubkeys))
-    response = block_io.get_new_dtrust_address(label=address_label,public_keys=','.join(str(x) for x in pubkeys),required_signatures=3)
+    response = block_io.get_new_dtrust_address(label=address_label,public_keys=','.join(str(x) for x in pubkeys),required_signatures=2)
 
     # if you want this to be a green address (instant coin usage), add make_green=1 to the above call's parameters
     # if choosing a green address, you will not receive a redeem_script in the response
@@ -215,8 +217,8 @@ def create_bounty(bio_api_key, bio_spin, bounty_amount):
     six.print_(">> Redeem Script:", response['data']['redeem_script'])
 
     # let's deposit some coins into this dTrust address of ours
-    six.print_("* Sending .008 BTCTEST to", new_dtrust_address)
-    response = block_io.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts='.008')
+    print "* Sending {}".format(bounty_amount) + " to {}".format(new_dtrust_address)
+    response = block_io.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts=bounty_amount)
     six.print_(">> Transaction ID:", response['data']['txid']) # you can check this on SoChain or any other blockchain explorer immediately
 
 
@@ -228,11 +230,21 @@ def create_bounty(bio_api_key, bio_spin, bounty_amount):
 # Input: editor_rcv_addy
 # Returns: status
 #
-def award_bounty(editor_rcv_address):
+def award_bounty(bounty_script_address, editor_rcv_address, bounty_amount):
+
+    # create the key objects for each private key
+    keys = [ BlockIo.Key.from_passphrase('alpha3alpha4alpha1alpha2'), BlockIo.Key.from_passphrase('alpha4alpha1alpha2alpha3') ]
+
+    pubkeys = []
+
+    for key in keys:
+        pubkeys.insert(len(pubkeys), key.pubkey_hex())
+        six.print_(key.pubkey_hex())
+
     # create the withdrawal request
     six.print_("* Creating withdrawal request")
 
-    response = block_io.withdraw_from_dtrust_addresses(from_addresses=new_dtrust_address,to_addresses=default_address,amounts=("%0.8f" % amount_to_send))
+    response = block_io.withdraw_from_dtrust_addresses(from_addresses=bounty_script_address,to_addresses=editor_rcv_address,amounts=("%0.8f" % bounty_amount))
 
     # the response contains data to sign and all the public_keys that need to sign it
     # you can distribute this response to all of your machines the contain your private keys
@@ -317,10 +329,11 @@ def main():
     mb_x.editor_rcv_address = '2MzhYahdyuyH6Dv4MuKXxbX61rTgxBNFM4R'
 
     # Submit 1 BTC on BTC Test Net to a script
+    # Funds are being taken from AUTHOR - using author_bitcoin_api_key
     create_bounty(mb_s.bio_api_key, mb_s.bio_spin, mb_x.bounty_amount)
 
     # Award 1 BTC from Script to Editor
-    award_bounty(mb.script_hash, mb_x.editor_rcv_address)
+    #award_bounty(mb.script_hash, mb_x.editor_rcv_address)
 
 
 if __name__ == '__main__':
