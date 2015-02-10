@@ -15,25 +15,33 @@ import sys
 #
 class Secrets:
     def __init__(self):
-        self.bio_spin=0
-        self.bio_api_key=0 # this is the BTCTestNet
-        self.bio_doge_api_key=0 # DogeCoin Test Net
+        self.bio_doge_api_key=0 # DogeCoin Test Net for example
+        self.bio_auth_spin=0 # All BTC test net for now for the rest
+        self.bio_auth_key=0
+        self.bio_plat_key=0
+        self.bio_plat_spin=0
     def __str__(self):
-        return ("Block IO Secret Pin: " + str(self.bio_spin) + "\n"
-                "Block IO Bitcoin API Key: " + str(self.bio_api_key) + "\n"
-                "Block IO Doge API Key: " + str(self.bio_doge_api_key)  )
+        return ("Block IO Author API Key: " + str(self.bio_auth_key) + "\n"
+                "Block IO Author Secret Pin: " + str(self.bio_auth_spin) + "\n"
+                "Block IO Platform API Key: " + str(self.bio_plat_key) + "\n"
+                "Block IO Platform Secret Pin: " + str(self.bio_plat_spin)
+        )
 
 # For testing - data about transaction
 #
 class Transaction:
     def __init__(self):
         self.bounty_amount=0
+        self.award_amount=0
         self.editor_rcv_address=0
         self.script_hash=0
+        self.expected_fee=0
     def __str__(self):
-        return ("Transaction Bounty Amount: " + str(self.bounty_amount) + "\n"
+        return ("Bounty Amount: " + str(self.bounty_amount) + "\n"
                 "Editor Receive Address: " + str(self.editor_rcv_address) + "\n"
-                "Script Hash: " + str(self.script_hash) )
+                "Script Hash: " + str(self.script_hash)  + "\n"
+                "Expected Transaction Fee: " + str(self.expected_fee) + "\n"
+                "Award Amount: " + str(self.award_amount))
 
 # Recurse through the dicts and arrays that are nested in return values and print all the keys, values, and items flat
 #
@@ -173,15 +181,12 @@ def block_io_dtrust_example(bio_api_key, bio_spin):
 # Create a transaction awarding coin from AUTHOR to a SCRIPT(must be signed by author and platform)
 # basically the first half of the dtrust example - using btctest - and 2 of 2 multisig
 #
-# Input: Block IO Platform API Key and Secret Pin and Bounty amount
-# Return: status
-#
-def create_bounty(bio_api_key, bio_spin, bounty_amount):
+def create_bounty(auth_key, auth_spin, bounty_amount):
 
     version = 2 # API version
 
     # using bitcoin testnet
-    block_io = BlockIo(bio_api_key, bio_spin, version)
+    block_io_author = BlockIo(auth_key, auth_spin, version)
     getcontext().prec = 8 # coins are 8 decimal places at most
 
     # create a new address with a random label
@@ -203,7 +208,7 @@ def create_bounty(bio_api_key, bio_spin, bounty_amount):
 
     print "* Creating a new 2 of 2 MultiSig address for BTCTEST"
     six.print_(','.join(str(x) for x in pubkeys))
-    response = block_io.get_new_dtrust_address(label=address_label,public_keys=','.join(str(x) for x in pubkeys),required_signatures=2)
+    response = block_io_author.get_new_dtrust_address(label=address_label,public_keys=','.join(str(x) for x in pubkeys),required_signatures=2)
 
     # if you want this to be a green address (instant coin usage), add make_green=1 to the above call's parameters
     # if choosing a green address, you will not receive a redeem_script in the response
@@ -218,7 +223,7 @@ def create_bounty(bio_api_key, bio_spin, bounty_amount):
 
     # let's deposit some coins into this dTrust address of ours
     print "* Sending {}".format(bounty_amount) + " to {}".format(new_dtrust_address)
-    response = block_io.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts=bounty_amount)
+    response = block_io_author.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts=bounty_amount)
     six.print_(">> Transaction ID:", response['data']['txid']) # you can check this on SoChain or any other blockchain explorer immediately
 
 
@@ -227,10 +232,10 @@ def create_bounty(bio_api_key, bio_spin, bounty_amount):
 # Create a transaction awarding coin from SCRIPT to the EDITOR
 # Basically the second half of the dtrust example
 #
-# Input: editor_rcv_addy
-# Returns: status
-#
-def award_bounty(bounty_script_address, editor_rcv_address, bounty_amount):
+def award_bounty(plat_key, plat_spin, bounty_script_address, editor_rcv_address, bounty_amount):
+
+    block_io_platform = BlockIo(plat_key, plat_spin, version)
+    getcontext().prec = 8 # coins are 8 decimal places at most
 
     # create the key objects for each private key
     keys = [ BlockIo.Key.from_passphrase('alpha3alpha4alpha1alpha2'), BlockIo.Key.from_passphrase('alpha4alpha1alpha2alpha3') ]
@@ -244,7 +249,8 @@ def award_bounty(bounty_script_address, editor_rcv_address, bounty_amount):
     # create the withdrawal request
     six.print_("* Creating withdrawal request")
 
-    response = block_io.withdraw_from_dtrust_addresses(from_addresses=bounty_script_address,to_addresses=editor_rcv_address,amounts=("%0.8f" % bounty_amount))
+    response = block_io_platform.withdraw_from_dtrust_addresses(
+        from_addresses=bounty_script_address,to_addresses=editor_rcv_address,amounts=("%0.8f" % bounty_amount))
 
     # the response contains data to sign and all the public_keys that need to sign it
     # you can distribute this response to all of your machines the contain your private keys
@@ -273,12 +279,12 @@ def award_bounty(bounty_script_address, editor_rcv_address, bounty_amount):
                     six.print_("* Data Signed By:", key.pubkey_hex())
 
         # let's have Block.io record this signature we just created
-        block_io.sign_transaction(signature_data=json.dumps(response['data']))
+        block_io_platform.sign_transaction(signature_data=json.dumps(response['data']))
         six.print_(">> Signatures relayed to Block.io for Public Key=", key.pubkey_hex())
 
     # finalize the transaction now that's it been signed by all our keys
     six.print_("* Finalizing transaction")
-    response = block_io.finalize_transaction(reference_id=response['data']['reference_id'])
+    response = block_io_platform.finalize_transaction(reference_id=response['data']['reference_id'])
     six.print_(">> Transaction ID:", response['data']['txid'])
     six.print_(">> Network Fee Incurred:", response['data']['network_fee'], response['data']['network'])
 
@@ -326,14 +332,17 @@ def main():
 
     # Setup Transaction
     mb_x.bounty_amount = .0001
+    mb_x.expected_fee = .00001
     mb_x.editor_rcv_address = '2MzhYahdyuyH6Dv4MuKXxbX61rTgxBNFM4R'
 
     # Submit 1 BTC on BTC Test Net to a script
     # Funds are being taken from AUTHOR - using author_bitcoin_api_key
     create_bounty(mb_s.bio_api_key, mb_s.bio_spin, mb_x.bounty_amount)
 
+    mb_x.award_amount = ( mb_x.bounty_amount - mb_x.expected_fee )
+
     # Award 1 BTC from Script to Editor
-    #award_bounty(mb.script_hash, mb_x.editor_rcv_address)
+    award_bounty(mb_s.bio_plat_key, mb_s.bio_plat_spin, mb_s.script_hash, mb_x.editor_rcv_address, mb_x.award_amount)
 
 
 if __name__ == '__main__':
