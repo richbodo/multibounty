@@ -1,0 +1,4 @@
+
+return value dict:
+
+{u'status': u'success', u'data': {u'available_balance': u'0.01000000', u'pending_received_balance': u'0.00000000', u'network': u'BTCTEST'}}
