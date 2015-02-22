@@ -1,3 +1,18 @@
+
+from block_io import BlockIo
+import ConfigParser
+import os
+import pdb
+import datetime
+from decimal import *
+import json
+import six # for python2 back-compatibility in printing messages using print as a function
+import random
+import sys
+import random
+import string
+from pprint import pprint
+
 # Recurse through the dicts and arrays that are nested in return values and print all the keys, values, and items flat
 #
 def print_flat(topthing):
@@ -27,8 +42,10 @@ def sanity_check_block_io(bio_api_key, bio_spin):
     print_flat(block_io.get_my_addresses())
 
 # Straight up copy of the block.io dtrust.py example - works!
+# Just updated to use BTCTEST and send .00001
 #
 def block_io_dtrust_example(bio_api_key, bio_spin):
+
     version = 2 # API version
 
     # use a testnet api key here, say, dogecoin
@@ -50,13 +67,9 @@ def block_io_dtrust_example(bio_api_key, bio_spin):
     # create a dTrust address that requires 4 out of 5 keys (4 of ours, 1 at Block.io).
     # Block.io automatically adds +1 to specified required signatures because of its own key
 
-    print "* Creating a new 4 of 5 MultiSig address for DOGETEST"
+    print "* Creating a new 4 of 5 MultiSig address for BTCTEST"
     six.print_(','.join(str(x) for x in pubkeys))
     response = block_io.get_new_dtrust_address(label=address_label,public_keys=','.join(str(x) for x in pubkeys),required_signatures=3)
-
-    # if you want this to be a green address (instant coin usage), add make_green=1 to the above call's parameters
-    # if choosing a green address, you will not receive a redeem_script in the response
-    # this is because Block.io must guarantee against double spends for green addresses
 
     # what's our new address?
     new_dtrust_address = response['data']['address']
@@ -66,8 +79,8 @@ def block_io_dtrust_example(bio_api_key, bio_spin):
     six.print_(">> Redeem Script:", response['data']['redeem_script'])
 
     # let's deposit some coins into this dTrust address of ours
-    six.print_("* Sending 50 DOGETEST to", new_dtrust_address)
-    response = block_io.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts='50')
+    six.print_("* Sending .00002 BTCTEST to", new_dtrust_address)
+    response = block_io.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts='.00003')
     six.print_(">> Transaction ID:", response['data']['txid']) # you can check this on SoChain or any other blockchain explorer immediately
 
     # since the above coins are coming from a Block.io green address (label=default, 2 of 2, visible on dashboard at Block.io),
@@ -82,7 +95,7 @@ def block_io_dtrust_example(bio_api_key, bio_spin):
 
     # let's send coins back to the default address we withdraw from just now
     # use high precision decimals when dealing with money (8 decimal places)
-    amount_to_send = Decimal(available_balance) - Decimal('1.0') # the amount minus the network fee needed to transact it
+    amount_to_send = Decimal(available_balance) - Decimal('.00001') # the amount minus the network fee needed to transact it
 
     six.print_("* Sending", "%0.8f" % amount_to_send, "back to 'default' address")
 
