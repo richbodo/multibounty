@@ -54,8 +54,8 @@ class Keys:
 
 def create_bounty(author_secrets, author_keys, platform_keys, bounty_tx):
 #
-# Create a transaction awarding coin from an AUTHOR to a SCRIPT.
-# Script is multisig must be signed by author and platform
+# Create bounty transaction awarding coin from an AUTHOR to a SCRIPT.
+#
     # Block IO Settings
     bio_version = 2 # Block.IO API version
     getcontext().prec = 8 # coins are 8 decimal places at most
@@ -65,25 +65,24 @@ def create_bounty(author_secrets, author_keys, platform_keys, bounty_tx):
     # create a dTrust address that requires 2 out of 2 keys.
     # Block.io automatically adds +1 to specified required signatures because of its own key
     # create a new address with a random label
-
     address_label = 'dtrust'+str(int(random.random()*10000))
-
     print "The dtrust address label is: " + address_label
     print "* Creating a new 2 of 2 MultiSig address for BTCTEST"
 
+    # Use the public keys that we generated earlier for author and platform
     pubkeys = []
     pubkeys.insert(len(pubkeys), author_keys.public_key)
     pubkeys.insert(len(pubkeys), platform_keys.public_key)
     public_keys_for_multisig = ','.join(pubkeys)
-    print "No idea why block.io does not like these keys: " + str(pubkeys)
 
     # Required signatures is 3: one for author, one for platform, and one for block.io, I think
-    # Yet, the example shows one less than that.
+    # Yet, the example shows one less than that.  Not sure why.
     response = author_api_object.get_new_dtrust_address(label=address_label,public_keys=public_keys_for_multisig, required_signatures=2)
 
     # what's our new address?
     new_dtrust_address = response['data']['address']
     six.print_(">> New dTrust Address on Network=", response['data']['network'], "is", new_dtrust_address)
+    bounty_tx.script_hash = new_dtrust_address
 
     # save this redeem script so you can use this address without depending on Block.io
     six.print_(">> Redeem Script:", response['data']['redeem_script'])
@@ -93,31 +92,35 @@ def create_bounty(author_secrets, author_keys, platform_keys, bounty_tx):
     response = author_api_object.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts=bounty_tx.input_amount)
     six.print_(">> Transaction ID:", response['data']['txid']) # you can check this on SoChain or any other blockchain explorer immediately
 
-def award_bounty(auth_keys, plat_keys, bounty_tx, award_tx):
+
+def award_bounty(platform_secrets, author_keys, platform_keys, bounty_tx, award_tx, editor_rcv_address):
 # Award the bounty
 #
-# Create a transaction awarding coin from SCRIPT to the EDITOR
+# Create award transaction awarding coin from SCRIPT to the EDITOR
 #
-# BUG - AUTHOR and PLATFORM both need to unlock the script with their private keys.
-# It looks like the dtrust example just makes up passphrases, private keys and public keys, so I haven't figured out why that works.
+# TODO: So the bug here is that I can't use a multisig address that I created with another account
+# Exception: Failed: Address=2NDjTGA6RtCk85b44P1992jGC7ybU5aDpa5 does not exist in your account for Network=BTCTEST.
 #
-    block_io_platform = BlockIo(plat_key, plat_spin, version)
+# So I will try to use the platform account for everything.  I am starting to see that there is no way to involve a user
+# that is not technically savvy in the multisig process, without forcing him to completely trust a platform.
+#
+    # Block IO Settings
+    bio_version = 2 # Block.IO API version
     getcontext().prec = 8 # coins are 8 decimal places at most
 
-    # create the key objects for each private key
-    keys = [ BlockIo.Key.from_passphrase('alpha3alpha4alpha1alpha2'), BlockIo.Key.from_passphrase('alpha4alpha1alpha2alpha3') ]
+    block_io_platform = BlockIo(platform_secrets.bio_key, platform_secrets.bio_spin, bio_version)
 
+    # Use the public keys that we generated earlier for author and platform
     pubkeys = []
-
-    for key in keys:
-        pubkeys.insert(len(pubkeys), key.pubkey_hex())
-        six.print_(key.pubkey_hex())
+    pubkeys.insert(len(pubkeys), author_keys.public_key)
+    pubkeys.insert(len(pubkeys), platform_keys.public_key)
+    public_keys_for_multisig = ','.join(pubkeys)
 
     # create the withdrawal request
     six.print_("* Creating withdrawal request")
 
     response = block_io_platform.withdraw_from_dtrust_addresses(
-        from_addresses=bounty_script_address,to_addresses=editor_rcv_address,amounts=("%0.8f" % bounty_amount))
+        from_addresses=bounty_tx.script_hash,to_addresses=editor_rcv_address,amounts=("%0.8f" % award_tx.input_amount))
 
     # the response contains data to sign and all the public_keys that need to sign it
     # you can distribute this response to all of your machines the contain your private keys
@@ -129,31 +132,31 @@ def award_bounty(auth_keys, plat_keys, bounty_tx, award_tx):
     six.print_(">> Withdrawal Reference ID:", response['data']['reference_id'])
 
     # sign the withdrawal request, one signature at a time
-
-    for key in keys:
-
-        for input in response['data']['inputs']:
-
-            data_to_sign = input['data_to_sign']
-
-            # find the object to put our signature in
-            for signer in input['signers']:
-
-                if signer['signer_public_key'] == key.pubkey_hex():
-                    # found it, let's add the signature to this object
-                    signer['signed_data'] = key.sign_hex(data_to_sign)
-
-                    six.print_("* Data Signed By:", key.pubkey_hex())
-
-        # let's have Block.io record this signature we just created
-        block_io_platform.sign_transaction(signature_data=json.dumps(response['data']))
-        six.print_(">> Signatures relayed to Block.io for Public Key=", key.pubkey_hex())
-
-    # finalize the transaction now that's it been signed by all our keys
-    six.print_("* Finalizing transaction")
-    response = block_io_platform.finalize_transaction(reference_id=response['data']['reference_id'])
-    six.print_(">> Transaction ID:", response['data']['txid'])
-    six.print_(">> Network Fee Incurred:", response['data']['network_fee'], response['data']['network'])
+    #
+    # for key in keys:
+    #
+    #     for input in response['data']['inputs']:
+    #
+    #         data_to_sign = input['data_to_sign']
+    #
+    #         # find the object to put our signature in
+    #         for signer in input['signers']:
+    #
+    #             if signer['signer_public_key'] == key.pubkey_hex():
+    #                 # found it, let's add the signature to this object
+    #                 signer['signed_data'] = key.sign_hex(data_to_sign)
+    #
+    #                 six.print_("* Data Signed By:", key.pubkey_hex())
+    #
+    #     # let's have Block.io record this signature we just created
+    #     block_io_platform.sign_transaction(signature_data=json.dumps(response['data']))
+    #     six.print_(">> Signatures relayed to Block.io for Public Key=", key.pubkey_hex())
+    #
+    # # finalize the transaction now that's it been signed by all our keys
+    # six.print_("* Finalizing transaction")
+    # response = block_io_platform.finalize_transaction(reference_id=response['data']['reference_id'])
+    # six.print_(">> Transaction ID:", response['data']['txid'])
+    # six.print_(">> Network Fee Incurred:", response['data']['network_fee'], response['data']['network'])
 
 def get_secrets(author_secrets, platform_secrets, editor_fixtures):
 # Grab the secrets out of an ini file so we don't have to check them into git!
@@ -173,8 +176,8 @@ def get_secrets(author_secrets, platform_secrets, editor_fixtures):
 
     author_secrets.bio_spin = data["author"]["spin"]
     author_secrets.bio_key = data["author"]["bitcoin_testnet_api_key"]
-    platform_secrets.bio_key = data["platform"]["spin"]
-    platform_secrets.bio_spin = data["platform"]["bitcoin_testnet_api_key"]
+    platform_secrets.bio_spin = data["platform"]["spin"]
+    platform_secrets.bio_key = data["platform"]["bitcoin_testnet_api_key"]
     editor_fixtures.rcv_address = data["editor"]["rcv_addy"]
 
 def generate_btc_keys(secrets, keys_to_return):
@@ -204,11 +207,9 @@ def main():
 
     get_secrets(author_secrets, platform_secrets, editor_fixtures)
 
-    # Generate AUTHOR private and public keys
+    # Generate AUTHOR and PLATFORM private and public keys
     generate_btc_keys(author_secrets, author_keys)
     print "Author Pubkey:" + str(author_keys.public_key)
-
-    # Generate PLATFORM private and public keys
     generate_btc_keys(platform_secrets, platform_keys)
     print "Platform Pubkey:" + str(platform_keys.public_key)
 
@@ -224,11 +225,15 @@ def main():
 
     # Step 2 - Decision (skipped for now - just decide to award total to one editor)
     award_tx.input_amount = ( bounty_tx.input_amount - bounty_tx.expected_fee )
+    award_tx.expected_fee = .00001
+    winning_rcv_address = editor_fixtures.rcv_address
 
     # Step 3 - Award Transaction
     # Here we need both the author and the platform to sign the output.
-    award_tx.expected_fee = .00001
-    award_bounty(author_keys, platform_keys, bounty_tx, award_tx, editor_fixtures.rcv_address)
+    award_bounty(platform_secrets, author_keys, platform_keys, bounty_tx, award_tx, winning_rcv_address)
+
+    # Step 4 - Check our work
+    # Check that the two transactions were verified and contain the correct information
 
 if __name__ == '__main__':
     main()
