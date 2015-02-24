@@ -27,6 +27,10 @@ Two of the simplest workflows we imagine are included below in use cases 1 and 2
 
 ![Simple Use Cases](./images/MultiBounty_Simple_UseCases.png)
 
+I took a first pass at mocking up the simpler of those two cases, Bounty Driven Editing, as a website:
+
+![Bounty Driven Editing Website](./images/BountyDrivenEditing1.png)
+
 MultiBounty was created as a blockchainu midterm project.
 
 
