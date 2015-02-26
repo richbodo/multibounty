@@ -1,5 +1,7 @@
 # block.io test
 #
+# Status - not working ATM - bug on line 137 - TypeError: Non-hexadecimal digit found
+#
 # This is just a test program to learn/exercise the block.io API as we would ultimately use it
 #
 # The issue I found with block.io is that the platform has to know all the secrets (be trusted).
