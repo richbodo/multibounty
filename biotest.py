@@ -1,5 +1,23 @@
 # block.io test
-
+#
+# This is just a test program to learn/exercise the block.io API as we would ultimately use it
+#
+# The issue I found with block.io is that the platform has to know all the secrets (be trusted).
+#
+# Until block.io offers the ability for the layman to sign something with their private key (via UI),
+# the platform would have to use the API on behalf of the signers. (AFAICT)
+#
+# A minor issue might be that we can't use a script address in another wallet.
+#
+# Exception: Failed: Address=2NDjTGA6RtCk85b44P1992jGC7ybU5aDpa5 does not exist in your account for Network=BTCTEST.
+#
+# Most documentation seems to indicate that we can create a P2SH on one computer, and transfer a copy of that script hash to another.
+#
+# i.e. https://bitcoin.org/en/developer-guide#p2sh-scripts
+#
+# So I will try to use the platform Block.io account for everything in this test program, although I'll create a multisig transaction.
+#
+#
 from block_io import BlockIo
 import ConfigParser
 import os
@@ -52,7 +70,7 @@ class Keys:
                 "Public Key: " + str(self.public_key) + "\n"
                 )
 
-def create_bounty(author_secrets, author_keys, platform_keys, bounty_tx):
+def create_bounty(platform_secrets, author_keys, platform_keys, bounty_tx):
 #
 # Create bounty transaction awarding coin from an AUTHOR to a SCRIPT.
 #
@@ -60,7 +78,7 @@ def create_bounty(author_secrets, author_keys, platform_keys, bounty_tx):
     bio_version = 2 # Block.IO API version
     getcontext().prec = 8 # coins are 8 decimal places at most
 
-    author_api_object = BlockIo(author_secrets.bio_key, author_secrets.bio_spin, bio_version)
+    platform_api_object = BlockIo(platform_secrets.bio_key, platform_secrets.bio_spin, bio_version)
 
     # create a dTrust address that requires 2 out of 2 keys.
     # Block.io automatically adds +1 to specified required signatures because of its own key
@@ -75,9 +93,9 @@ def create_bounty(author_secrets, author_keys, platform_keys, bounty_tx):
     pubkeys.insert(len(pubkeys), platform_keys.public_key)
     public_keys_for_multisig = ','.join(pubkeys)
 
-    # Required signatures is 3: one for author, one for platform, and one for block.io, I think
-    # Yet, the example shows one less than that.  Not sure why.
-    response = author_api_object.get_new_dtrust_address(label=address_label,public_keys=public_keys_for_multisig, required_signatures=2)
+    # Required signatures is 3: one for author, one for platform, and one for block.io, I think, according to example comments
+    # Yet, the example shows one less than that in fact.  Not sure why.
+    response = platform_api_object.get_new_dtrust_address(label=address_label,public_keys=public_keys_for_multisig, required_signatures=2)
 
     # what's our new address?
     new_dtrust_address = response['data']['address']
@@ -89,8 +107,8 @@ def create_bounty(author_secrets, author_keys, platform_keys, bounty_tx):
 
     # let's deposit some coins into this dTrust address of ours
     print "* Sending {}".format(bounty_tx.input_amount) + " to {}".format(new_dtrust_address)
-    response = author_api_object.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts=bounty_tx.input_amount)
-    six.print_(">> Transaction ID:", response['data']['txid']) # you can check this on SoChain or any other blockchain explorer immediately
+    response = platform_api_object.withdraw_from_labels(from_labels='default', to_addresses=new_dtrust_address, amounts=bounty_tx.input_amount)
+    #six.print_(">> Transaction ID:", response['data']['txid']) # you can check this on SoChain or any other blockchain explorer immediately
 
 
 def award_bounty(platform_secrets, author_keys, platform_keys, bounty_tx, award_tx, editor_rcv_address):
@@ -98,12 +116,7 @@ def award_bounty(platform_secrets, author_keys, platform_keys, bounty_tx, award_
 #
 # Create award transaction awarding coin from SCRIPT to the EDITOR
 #
-# TODO: So the bug here is that I can't use a multisig address that I created with another account
-# Exception: Failed: Address=2NDjTGA6RtCk85b44P1992jGC7ybU5aDpa5 does not exist in your account for Network=BTCTEST.
-#
-# So I will try to use the platform account for everything.  I am starting to see that there is no way to involve a user
-# that is not technically savvy in the multisig process, without forcing him to completely trust a platform.
-#
+
     # Block IO Settings
     bio_version = 2 # Block.IO API version
     getcontext().prec = 8 # coins are 8 decimal places at most
@@ -171,7 +184,6 @@ def get_secrets(author_secrets, platform_secrets, editor_fixtures):
 
     config_handle = open(config_file, 'r')
     data = json.load(config_handle)
-    #pprint(data)
     config_handle.close()
 
     author_secrets.bio_spin = data["author"]["spin"]
@@ -209,21 +221,27 @@ def main():
 
     # Generate AUTHOR and PLATFORM private and public keys
     generate_btc_keys(author_secrets, author_keys)
-    print "Author Pubkey:" + str(author_keys.public_key)
     generate_btc_keys(platform_secrets, platform_keys)
+
+    print "Author Pubkey:" + str(author_keys.public_key)
     print "Platform Pubkey:" + str(platform_keys.public_key)
+
+    #    We will just use the "platform" wallet to conduct all the transactions for the moment
+    #    (See note at top of file)
+    #    The author wallet exists only to transfer funds into the platform wallet
 
     # Step 1 - Bounty Transaction
     # Funds are being taken from AUTHOR - using author_bitcoin_api_key
     # We need the public keys of the author and the platform to create the script
     bounty_tx.input_amount = .0001
     bounty_tx.expected_fee = .00001
-    create_bounty(author_secrets, author_keys, platform_keys, bounty_tx)
+    create_bounty(platform_secrets, author_keys, platform_keys, bounty_tx)
 
     # Sanity Check
     # bio_sanity_checks.block_io_dtrust_example(author_secrets.bio_key, author_secrets.bio_spin)
 
     # Step 2 - Decision (skipped for now - just decide to award total to one editor)
+    # And we are taking the editor rcv address from our secrets file rather than a human
     award_tx.input_amount = ( bounty_tx.input_amount - bounty_tx.expected_fee )
     award_tx.expected_fee = .00001
     winning_rcv_address = editor_fixtures.rcv_address
