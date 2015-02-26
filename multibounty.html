@@ -1,0 +1,22 @@
+<head>
+  <title>multibounty</title>
+</head>
+
+<body>
+  {{> loginButtons}}
+  <h1>Welcome to Meteor!</h1>
+
+  {{> hello}}
+
+  {{#if currentUser}}
+  Welcome to multibounty!  You can create your bounties here, {{currentUser.emails.[0].address}}.
+  {{/if}}
+</body>
+
+
+
+
+<template name="hello">
+  <button>Click Me</button>
+  <p>You've pressed the button {{counter}} times.</p>
+</template>
