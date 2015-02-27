@@ -1,5 +1,5 @@
-var platform = require("/home/rsb/.multibounty/apis.js").platform;
-var author   = require("/home/rsb/.multibounty/apis.js").author;
+var platform = require("./apis.js").platform;
+var author   = require("./apis.js").author;
 
 function output(obj) {
     console.log(JSON.stringify(obj,true,3))
