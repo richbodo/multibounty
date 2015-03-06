@@ -1,6 +1,8 @@
 var Bounties = new Mongo.Collection("bounties");
 
 if (Meteor.isClient) {
+
+  foo="hello";
   // counter starts at 0
   Session.setDefault('counter', 0);
     
@@ -43,15 +45,20 @@ if (Meteor.isClient) {
 		Session.set('authorBalance',value);
 	    });
 	}
-	
+
     });
 
+    Template.create_bounty.events({
+        'click .create_bounty': function () {
+            alert($(".creative_work").val());
+        }
+    });
 }
 
 if (Meteor.isServer) {
 
     // module apis
-    var SECRETS = Npm.require('/Users/zvi/.multibounty/secrets.js').SECRETS
+    var SECRETS = Npm.require('/Users/rsb/.multibounty/secrets.js').SECRETS
     var BlockIo = Npm.require('block_io');
     var version = 2; // API version
     var platform = new BlockIo(SECRETS["platform"]["bitcoin_testnet_api_key"], 
