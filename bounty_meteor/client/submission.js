@@ -1,5 +1,5 @@
 Template.submission.events({
 	"click .approve_submission" : function() {
-		console.log('it is approved.');
+		Meteor.call('approveSubmission', this.submission_id);
 	}
 })

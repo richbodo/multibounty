@@ -1,6 +1,13 @@
 Template.bounty.helpers({
 	bounty: function() {
-		return Bounties.findOne(this.bounty_id);
+		if (this['bounty_object']) {
+			return this['bounty_object'];
+		} else {
+			b = this['bounty_object'] = Bounties.findOne(this.bounty_id);
+			// var b2 = b ? b.fetch() : 'undefined';
+			console.log(["bounty.helpers.bounty",this.bounty_id, this,'b',b]);
+			return b;
+		}
 	},
 	submissions: function() {
 		return Submissions.find({"bounty_id":this.bounty_id}).fetch();
