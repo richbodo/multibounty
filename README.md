@@ -44,7 +44,9 @@ There are some really fun ideas that have been proposed for bounties, and could 
     - When someone checks in a fix to an issue, they check in with the comment "rcv_address Fixes #issue_num"
     - The author can then [comment on it - need to read some github platform stuff to figure this out] with BOUNTY_DSL (i.e. {award_bounty:0.5} ) and the bounty gets paid.
 * The use case in which copyright is assigned is a big one.  That could be done as a contract on one blockchain or another as well, although how legally binding that might be in any jurisdiction is a bit fuzzy.
-* 
+
+
+
 MultiBounty was created as a blockchainu midterm project.
 
 
