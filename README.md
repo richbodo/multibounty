@@ -13,16 +13,6 @@ You are an author of some code or other work on github.  You want to incentivize
 
 3) **Award Transaction:** Finally, an award must be made sending the output of the Bounty Transaction to the receiving address of the winner.
 
-**Future Work:** Many different possibilities exist for more complex use cases and workflows.  
-
-In the first step, the Bounty could be multiparty (many people chip in to the award, some number need to be in agreement to present it).  
-
-In the second step, the Decision to award a bounty, can be complex, involving multiple parties, voting, test driven development, handoff of copyright, and more.  The bounty could also be restricted to a list of individuals (or even just to the author).
-
-In the third  step, the award transaction might be given partially to many submissions that all contribute some value.  
-
-Finally, the underlying services for blockchain manipulation (blockcypher, block.io, bitcore-wallet-service, ethereum, etc) and decision making (github, travis.ci) could be abstracted.  We'll just start simple, though.
-
 Two of the simplest workflows we imagine are included below in use cases 1 and 2.
 
 ![Simple Use Cases](./images/MultiBounty_Simple_UseCases.png)
@@ -31,7 +21,18 @@ I took a first pass at mocking up the simpler of those two cases, Bounty Driven 
 
 ![Bounty Driven Editing Website](./images/BountyDrivenEditing1.png)
 
-Ideas:
+
+**Future Work:** Many different possibilities exist for more complex use cases and workflows.  
+
+Looking just at the three steps required to make a bounty:
+
+In the first step, the Bounty could be multiparty (many people chip in to the award, some number need to be in agreement to present it).  
+
+In the second step, the Decision to award a bounty, can be complex, involving multiple parties, voting, test driven development, handoff of copyright, and more.  The bounty could also be restricted to a list of individuals (or even just to the author).
+
+In the third  step, the award transaction might be given partially to many submissions that all contribute some value.  
+
+Finally, the underlying services for blockchain manipulation (blockcypher, block.io, bitcore-wallet-service, ethereum, etc) and decision making (github, travis.ci) could be abstracted.  We'll just start simple, though.
 
 There are some really fun ideas that have been proposed for bounties, and could be explored further here.  Such as:
 
@@ -43,8 +44,7 @@ There are some really fun ideas that have been proposed for bounties, and could 
     - Include some markup in the issue in BOUNTY_DSL (i.e. {create_bounty:1.0} )
     - When someone checks in a fix to an issue, they check in with the comment "rcv_address Fixes #issue_num"
     - The author can then [comment on it - need to read some github platform stuff to figure this out] with BOUNTY_DSL (i.e. {award_bounty:0.5} ) and the bounty gets paid.
-* The use case in which copyright is assigned is a big one.  That could be done as a contract on one blockchain or another as well, although how legally binding that might be in any jurisdiction is a bit fuzzy.
-
+* Copyright assignment might be interesting.  That could be done as a contract on one blockchain or another as well, although how legally binding that might be in any jurisdiction is a bit fuzzy.  Simple enough to apply a shrink wrap EULA when submitting an edit - but maybe you don't want to offer the copyright until you get the bounty.  Or...maybe you want to have fun writing smart contracts! ;)
 
 
 MultiBounty was created as a blockchainu midterm project.
