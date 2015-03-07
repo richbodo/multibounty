@@ -51,13 +51,22 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
     // module apis
-    var SECRETS = Npm.require('/Users/zvi/.multibounty/secrets.js').SECRETS
+    // module apis
+
+    var path = Npm.require('path');
+    var process = Npm.require('process');
+    var homePath = (process.platform === 'win32') ? process.env.HOMEPATH : process.env.HOME;
+    var secretsPath = '.multibounty/secrets.js';
+
+    var homeSecretsPath = path.join(homePath, secretsPath);
+    var SECRETS = Npm.require(homeSecretsPath).SECRETS;
+
     var BlockIo = Npm.require('block_io');
     var version = 2; // API version
     var platform = new BlockIo(SECRETS["platform"]["bitcoin_testnet_api_key"],
         SECRETS["platform"]["spin"], // 'YOUR SECRET PIN',
         version);
-    var author = new BlockIo(SECRETS["author"]["bitcoin_testnet_api_key"],
+    var author =  new BlockIo(SECRETS["author"]["bitcoin_testnet_api_key"],
         SECRETS["author"]["spin"], // 'YOUR SECRET PIN',
         version);
 
@@ -66,41 +75,25 @@ if (Meteor.isServer) {
         'platform': 0,
         'author': 0
     };
-
-    var showTotal = function () {
-        console.log(['total', total]);
-    };
-
+    var showTotal = function() { console.log(['total',total]); };
     Meteor.methods({
-        incr: function () {
-            total += 1;
-            showTotal()
-        },
-        decr: function () {
-            total -= 1;
-            showTotal()
-        },
-        get: function () {
-            showTotal();
-            return total;
-        },
+        incr : function() { total += 1; showTotal() },
+        decr : function() { total -= 1; showTotal() },
+        get : function() { showTotal(); return total; },
         //- ----------
-        getPlatformBalance: function () {
+        getPlatformBalance : function() {
             return balances['platform'];
         },
-        getAuthorBalance: function () {
+        getAuthorBalance : function() {
             return balances['author'];
         },
-        updateBalances: function () {
-            platform.get_balance(function (error, result) {
+        updateBalances : function() {
+            platform.get_balance(function(error,result){
                 balances['platform'] = result.data.available_balance;
             });
-            author.get_balance(function (error, result) {
+            author.get_balance(function(error,result){
                 balances['author'] = result.data.available_balance;
             });
-        },
-        transferSomeBitcoin: function () {
-
         }
 
     });
@@ -110,7 +103,7 @@ if (Meteor.isServer) {
         // code to run on server at startup
         console.log(platform);
         console.log(author);
-        Meteor.call('updateBalances');
+        //Meteor.call('updateBalances');
     });
 
 }
