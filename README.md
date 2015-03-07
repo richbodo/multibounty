@@ -37,11 +37,11 @@ There are some really fun ideas that have been proposed for bounties, and could 
 
 * Security bounties - obtain a private key required to sign a transaction by cracking security of a system, revealing it.  Of course, one would want this to be verified by a few others who would sign to verify that the exploit was fully revealed to the owner of the system cracked.
 * Github integration - one could imagine that almost no change to normal development workflow would be required after setting up an author account:
-** Register once for the site per repository on github you want to assign bounties for.
-** Edit your work as you always do
-** Check in an issue (i.e. this library needs to support OP_RETURN to put the award notification on the blockchain)
-** Include some markup in the issue in BOUNTY_DSL (i.e. {create_bounty:1.0} )
-** When someone checks in a fix to an issue, comment on it with BOUNTY_DSL (i.e. {award_bounty:0.5} )
+    - Register once for the site per repository on github you want to assign bounties for.
+    - Edit your work as you always do
+    - Check in an issue (i.e. this library needs to support OP_RETURN to put the award notification on the blockchain)
+    - Include some markup in the issue in BOUNTY_DSL (i.e. {create_bounty:1.0, task:"fix this"} )
+    - When someone checks in a fix to an issue, comment on it with BOUNTY_DSL (i.e. {award_bounty:0.5} )
 
 MultiBounty was created as a blockchainu midterm project.
 
