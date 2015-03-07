@@ -68,6 +68,7 @@ Meteor.methods({
                         HTTP.post('https://block.io/api/v2/withdraw_from_labels/',{
                             params: txn
                         }, function(error,result) {
+                            Meteor.call('updateAddressForBounty',s.bounty_id);
                             console.log(['withdraw from labels', txn, error, result, result.data.data]);
                         });
 
@@ -77,7 +78,7 @@ Meteor.methods({
                         //         console.log("error in approveSubmission (withdraw_from_labels)", error);
                         //     }
                         //     if (result) {
-                        //         Meteor.call('updateAddressForBounty',s.bounty_id);
+                        //         
                         //     }
                         // }));
 
