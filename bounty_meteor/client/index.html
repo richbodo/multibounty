@@ -3,9 +3,9 @@
 </head>
 
 <body>
-  <h1>Ba Ba Ba Bounty</h1>
-
-  <a href="{{pathFor route='bounties.list'}}">Bounties</a>
-  | <a href="{{pathFor route='bounties.new'}}">New Bounty</a>
+  <h2>Ba Ba Ba Bounty</h2>
+  {{> loginButtons}}
+  | <a href="{{pathFor route='bounties.list'}}">Bounties</a>
+  {{#if currentUser}} | <a href="{{pathFor route='bounties.new'}}">New Bounty</a>{{/if}}
   <hr/><br/>
 </body>
