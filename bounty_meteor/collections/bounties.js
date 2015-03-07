@@ -1,3 +1,6 @@
+Bounties = new Mongo.Collection('bounties');
+
+
 Meteor.methods({
     addBounty: function (creative_work, bounty_task, bounty_amount) {
         console.log("adding a Bounty to the db in meteor method");
