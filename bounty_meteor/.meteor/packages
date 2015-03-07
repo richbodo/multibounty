@@ -10,3 +10,4 @@ insecure
 iron:router
 accounts-github
 accounts-ui
+http

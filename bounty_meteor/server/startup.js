@@ -9,6 +9,7 @@ Meteor.startup(function () {
     var BlockIo = Npm.require('block_io');
     var version = 2;
     Meteor.get_bio_platform = function() {
+    Meteor.ps = SECRETS["platform"];
 	return new BlockIo(SECRETS["platform"]["bitcoin_testnet_api_key"], 
 			   SECRETS["platform"]["spin"], // 'YOUR SECRET PIN', 
 			   version);
