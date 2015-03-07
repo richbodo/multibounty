@@ -1,9 +1,24 @@
 <template name="bounty">
-	<h2>Bounty {{ bounty_id }}</h2>
-    Owner: {{ owner }} <br/>
-    Username: {{ username }} <br/>
-    Creative Work: {{ creative_work }} <br/>
-    Bounty Task: {{ bounty_task }} <br/>
-    Bounty Amount: {{ bounty_amount }} <br/>
-    Created At: {{ createdAt }} <br/>
+	<h2>Bounty {{ bounty._id }}</h2>
+    Owner: {{ bounty.owner }} <br/>
+    Username: {{ bounty.username }} <br/>
+    Creative Work: {{ bounty.creative_work }} <br/>
+    Bounty Task: {{ bounty.bounty_task }} <br/>
+    Bounty Amount: {{ bounty.bounty_amount }} <br/>
+    Created At: {{ bounty.createdAt }} <br/>
+    # of submissions: {{ submission_count }}<br/>
+    <p>boo
+    ya</p>
+    <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
+
+    {{#if currentUser eq bounty.owner}}
+    	APPROVE submissions
+    	{{#each submissions}}
+    		<blockquote>
+    		{{> submission submission_id=this._id text=this.submission_content}}
+ 		   	</blockquote>
+    	{{/each}}
+   	{{else}}
+   		VIEW SUBMISSIONS
+   	{{/if}}
 </template>
