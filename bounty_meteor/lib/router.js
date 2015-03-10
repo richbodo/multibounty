@@ -2,6 +2,10 @@
  *   https://github.com/iron-meteor/iron-router/blob/devel/Guide.md
  */
 
+Router.route('/', function(){
+	this.render('index');
+},{name:'index'})
+
 Router.route('/bounties',function(){
     this.render('bounties');
 },{name:'bounties.list'});
