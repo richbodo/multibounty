@@ -3,7 +3,8 @@
 </head>
 
 <body>
-  <a href="{{pathFor route='index'}}">MultiBounty Home</a>
+
+  <img src="/images/bs.png">
   | <a href="{{pathFor route='bounties.list'}}">Bounties</a>
   | {{> loginButtons}}
   {{#if currentUser}} | <a href="{{pathFor route='bounties.new'}}">Create a new Bounty</a>{{/if}}
@@ -11,16 +12,14 @@
 </body>
 
 <template name="index">
-	<h2>Welcome to multi bounty, a place where anyone can publicize things that they would like to fund.</h2>
+	<h2>Welcome to Bounty Site! - a blockchainu project.</h2>
 	<ol>
-		<li>Each bounty has a title and a description of what the conditions for redemption should be.<br/><br/>
+		<li>Example of a bounty task:<br/><br/>
 
-			For example,
-			"submit a pull request to github.com/zvibo/multibounty that provides a snazzy css skin for the meteor site."<br/><br/>
+			"Submit a pull request to github.com/zvibo/multibounty that provides a snazzy css skin for the meteor site."<br/><br/>
 		</li>
-		<li>Any member of the public can submit a request to receive the bounty.
-
-			<br/><br/>Each submission should include a receiving address to where the money should be sent, as well as some text describing how this submission meets the conditions for redemptions. (For example, "see pull request #4").
+		<li>Example of submitted work:<br/><br/>
+            "Yo, I fixed that thing: https://github.com/zvibo/ghbounties/commit/8330fec70f03b7df8e4871d92ac360b9edd77379"<br/><br/>
 		</li>
 	</ol>
 </template>
