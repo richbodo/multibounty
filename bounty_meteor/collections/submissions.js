@@ -63,15 +63,24 @@ Meteor.methods({
 
                         console.log(['txn will be:', txn]);
 
-                        plat.withdraw_from_labels(txn, mb(function(error,result){
-                            console.log('finished withdraw_from_labels');
-                            if (error) {
-                                console.log("error in approveSubmission (withdraw_from_labels)", error);
-                            }
-                            if (result) {
-                                Meteor.call('updateAddressForBounty',s.bounty_id);
-                            }
-                        }));
+                        txn.api_key = Meteor.ps.bitcoin_testnet_api_key;
+                        txn.pin     = Meteor.ps.spin;
+                        HTTP.post('https://block.io/api/v2/withdraw_from_labels/',{
+                            params: txn
+                        }, function(error,result) {
+                            Meteor.call('updateAddressForBounty',s.bounty_id);
+                            console.log(['withdraw from labels', txn, error, result, result.data.data]);
+                        });
+
+                        // plat.withdraw_from_labels(txn, mb(function(error,result){
+                        //     console.log('finished withdraw_from_labels');
+                        //     if (error) {
+                        //         console.log("error in approveSubmission (withdraw_from_labels)", error);
+                        //     }
+                        //     if (result) {
+                        //         
+                        //     }
+                        // }));
 
                     }                                
 

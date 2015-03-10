@@ -39,7 +39,10 @@ Meteor.methods({
                 console.log(['createAddressForBounty','result',result,'error',error]);
                 if (result.status === "success") {
                     Bounties.update({"_id":bounty_id},{
-                        $set: {"receiving_address": result.data.address}
+                        $set: {
+                            "receiving_address": result.data.address,
+                            "updatedAt" : new Date()
+                        }
                     });
                     Meteor.call('updateAddressForBounty',bounty_id);
                 }
@@ -59,7 +62,7 @@ Meteor.methods({
                             "receiving_address": result.data.address,
                             "bounty_amount": parseFloat(result.data.available_balance),
                             "pending_amount": parseFloat(result.data.pending_received_balance),
-                            "last_updated": new Date()
+                            "updatedAt": new Date()
                         }
                     });
                 }
