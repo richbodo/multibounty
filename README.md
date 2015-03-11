@@ -37,14 +37,9 @@ Finally, the underlying services for blockchain manipulation (blockcypher, block
 There are some really fun ideas that have been proposed for bounties, and could be explored further here.  Such as:
 
 * Security bounties - obtain a private key required to sign a transaction by cracking security of a system, revealing it.  Of course, one would want this to be verified by a few others who would sign to verify that the exploit was fully revealed to the owner of the system cracked.
-* Github integration - one could imagine that almost no change to normal development workflow would be required after setting up an author account:
-    - Register once for the site per repository on github you want to assign bounties for, and the funding you want to add for bounties on that repo.
-    - Edit your work as you always do.
-    - Check in an issue (i.e. this library needs to support OP_RETURN to put the award notification on the blockchain)
-    - Include some markup in the issue in BOUNTY_DSL (i.e. {create_bounty:1.0} )
-    - When someone checks in a fix to an issue, they check in with the comment "rcv_address Fixes #issue_num"
-    - The author can then [comment on it - need to read some github platform stuff to figure this out] with BOUNTY_DSL (i.e. {award_bounty:0.5} ) and the bounty gets paid.
+* Github integration - this is a tricky one, because although a micro-format can be used in co-operation with github issues and commits to prevent one from having to leave their flow, github is a horrible sidechain, allowing modification to almost anything you add after the fact.  As far as we can tell, github.com itself would have to add some functionality to enable this to work.
 * Copyright assignment might be interesting.  That could be done as a contract on one blockchain or another as well, although how legally binding that might be in any jurisdiction is a bit fuzzy.  Simple enough to apply a shrink wrap EULA when submitting an edit - but maybe you don't want to offer the copyright until you get the bounty.  Or...maybe you want to have fun writing smart contracts! ;)
+* The big kahuna problem is to make it easy for end users to do this without a platform - something that would probably involve much more featureful client wallets than we have seen (proposal, signed transaction sharing, on-chain messaging..
 
 
 MultiBounty was created as a blockchainu midterm project.
