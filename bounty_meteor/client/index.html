@@ -5,14 +5,14 @@
 <body>
 
   <a href="{{pathFor route='index'}}"><img src="/images/bs.png" style="border:0;"/></a>
-  | <a href="{{pathFor route='bounties.list'}}">Bounties</a>
+  | <a href="{{pathFor route='bounties.list'}}">View Available Bounties</a>
   | {{> loginButtons}}
-  {{#if currentUser}} | <a href="{{pathFor route='bounties.new'}}">Create a new Bounty</a>{{/if}}
+  {{#if currentUser}} | <a href="{{pathFor route='bounties.new'}}">Create a New Bounty</a>{{/if}}
   <hr/>
 </body>
 
 <template name="index">
-	<h2>Welcome to Bounty Site! - a blockchainu project.</h2>
+	<h2>Welcome to Bounty Site! - a blockchainu project.  All transactions are on BTC_TEST.</h2>
 	
 	<ol>
 		<li>Example of a bounty task:<br/><br/>
