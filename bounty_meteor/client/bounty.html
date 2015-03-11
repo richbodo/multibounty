@@ -19,7 +19,7 @@
             ( <a href="https://www.biteasy.com/testnet/addresses/{{ bounty.receiving_address }}">explore</a> )
             
             {{#if bounty.pending_amount }}<br/>( {{ bounty.pending_amount }} BTC pending - wait up to 10 minutes ){{/if}}
-            {{#if currentUser eq bounty.owner }}
+            <!--{{#if currentUser eq bounty.owner }}-->
                 {{ submission_count }} Submissions:<br/>
             	{{#each submissions}}
             		<blockquote>
@@ -27,10 +27,10 @@
          		   	</blockquote>
             	{{/each}}
                 or <button class="remove">delete this bounty</button>
-           	{{else}}
+           	<!--{{else}}-->
                 <br/><br/>
                 <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
-           	{{/if}}
+             <!--{{/if}}-->
         </blockquote>
         </div>
 
