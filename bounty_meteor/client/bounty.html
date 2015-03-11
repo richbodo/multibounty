@@ -1,26 +1,27 @@
 <template name="bounty">
 
-	<h2>Bounty {{ bounty._id }}</h2>
-    Owner: {{ bounty.owner }}<br/>
-    Creative Work: {{ bounty.creative_work }} <br/>
-    Bounty Task: {{ bounty.bounty_task }} <br/>
-    Bounty Amount: {{ bounty.bounty_amount }} ( {{ bounty.pending_amount }} pending )<br/>
+    <div style="border: 1px solid #ccc; background-color: #eee;">
+    <b> {{ bounty.username }} offers {{ bounty.bounty_amount }} BTC ( {{ bounty.pending_amount }} pending ) for:</b>
+
+    <blockquote>
+    <p>{{ bounty.creative_work }}</p>
+    <p>{{ bounty.bounty_task }}</p>
     Created At: {{ bounty.createdAt }} <br/>
     Updated At: {{ bounty.updatedAt }} <br/>
-    Receive Addr: {{ bounty.receiving_address }}<br/>
-    # of submissions: {{ submission_count }}<br/>
-    user:{{ bounty.username }}
-    (<a class="remove">rm</a>)
-    <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
+    <em>To fund this bounty, send test bitcoin to:</em><br/><b>{{ bounty.receiving_address }}</b>
+    </blockquote>
+    
 
-    {{#if currentUser eq bounty.owner}}
-    	APPROVE submissions
+    {{#if currentUser eq bounty.owner }}
+        {{ submission_count }} Submissions:<br/>
     	{{#each submissions}}
     		<blockquote>
     		{{> submission submission_id=this._id text=this.submission_content bounty_id=bounty._id}}
  		   	</blockquote>
     	{{/each}}
+        or <button class="remove">delete this bounty</button>
    	{{else}}
-   		VIEW SUBMISSIONS
+        <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
    	{{/if}}
+   </div>
 </template>

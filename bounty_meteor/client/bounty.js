@@ -9,6 +9,9 @@ Template.bounty.helpers({
 			return b;
 		}
 	},
+	isOwner: function() {
+		return this.bounty.owner == Meteor.userId();
+	},
 	submissions: function() {
 		return Submissions.find({"bounty_id":this.bounty_id}).fetch();
 	},

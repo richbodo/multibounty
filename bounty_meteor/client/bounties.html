@@ -1,6 +1,5 @@
 <template name="bounties">
-	<h2>All Da Bounties</h2>
-	<button class="update_the_bounties">Update the Bounties</button>
+	<h2>All Bounties <button class="update_the_bounties">Update the Bounties</button></h2>
     {{#each bounties}}
         {{> bounty bounty_id=_id}}
         <a href="{{pathFor route="bounties.show" id=_id}}">details</a>
