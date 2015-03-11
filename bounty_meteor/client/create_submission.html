@@ -1,12 +1,15 @@
 <template name="create_submission">
-	<h2>Create A Submission For Bounty {{ bounty_id }}</h2>
-    <label>Bitcoin Receiver Address<br/><input class="receiver_address"/></label><br/>
-    <label>Submission Content<br/><textarea class="submission_content"></textarea></label><br/>
-    <button class="create_submission">Create Submission</button>
-    <ol>
-    <li>Example of submitted work:<br/><br/>
-        "Receive Address: 2NAKxGtGEjwH2nyHovVjYKhyK7uDEGttMxf"<br/><br/>
-        "Submission Content: Yo, I fixed that thing: https://github.com/zvibo/ghbounties/commit/8330fec70f03b7df8e4871d92ac360b9edd77379"<br/><br/>
-    </li>
-    </ol>
+	<h2><a href="{{pathFor route="bounties.show" id=bounty_id}}">Bounty {{ bounty_id }}</a> ::
+Add A Submission</h2>
+    <blockquote>
+        <label>Bitcoin Receiver Address<br/><input class="receiver_address" style="width: 400px; font-size:14pt;"/></label><br/><br/><br/>
+        <label>Submission Content<br/><textarea style="width: 400px; height: 150px;" class="submission_content"></textarea></label><br/>
+        <button class="create_submission">Create Submission</button>
+        
+        <blockquote>
+        Example of submitted work:<br/><br/>
+            "Receive Address: 2NAKxGtGEjwH2nyHovVjYKhyK7uDEGttMxf"<br/><br/>
+            "Submission Content: Yo, I fixed that thing: https://github.com/zvibo/ghbounties/commit/8330fec70f03b7df8e4871d92ac360b9edd77379"<br/><br/>
+        </blockquote>
+    </blockquote>
 </template>

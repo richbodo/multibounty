@@ -8,27 +8,32 @@
         </li>
     {{else}}
         <div style="padding: 20px">
-
+            <a href="{{pathFor route='bounties.list'}}">All Bounties</a> :: Bounty :: {{ bounty.username }} offers {{ bounty.bounty_amount }} BTC for<br/>
         <blockquote>
-        <p>{{ bounty.bounty_task }}</p>
-        Created At: {{ bounty.createdAt }} <br/>
-        Updated At: {{ bounty.updatedAt }} <br/>
-        <em>To fund this bounty, send test bitcoin to:</em><br/><b>{{ bounty.receiving_address }}</b>
-        </blockquote>
         
+            <p>{{ bounty.bounty_task }}</p>
+            Created At: {{ bounty.createdAt }} <br/>
+            Updated At: {{ bounty.updatedAt }} <br/><br/>
+            <em>To fund this bounty, send test bitcoin to:</em><br/>
+            <b>{{ bounty.receiving_address }}</b> 
+            ( <a href="https://www.biteasy.com/testnet/addresses/{{ bounty.receiving_address }}">explore</a> )
+            
+            {{#if bounty.pending_amount }}<br/>( {{ bounty.pending_amount }} BTC pending - wait up to 10 minutes ){{/if}}
+            {{#if currentUser eq bounty.owner }}
+                {{ submission_count }} Submissions:<br/>
+            	{{#each submissions}}
+            		<blockquote>
+            		{{> submission submission_id=this._id text=this.submission_content bounty_id=bounty._id}}
+         		   	</blockquote>
+            	{{/each}}
+                or <button class="remove">delete this bounty</button>
+           	{{else}}
+                <br/><br/>
+                <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
+           	{{/if}}
+        </blockquote>
+        </div>
 
-        {{#if currentUser eq bounty.owner }}
-            {{ submission_count }} Submissions:<br/>
-        	{{#each submissions}}
-        		<blockquote>
-        		{{> submission submission_id=this._id text=this.submission_content bounty_id=bounty._id}}
-     		   	</blockquote>
-        	{{/each}}
-            or <button class="remove">delete this bounty</button>
-       	{{else}}
-            <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
-       	{{/if}}
-       </div>
    {{/if}}
 
 
