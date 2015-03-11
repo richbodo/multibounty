@@ -7,7 +7,7 @@ You are an author of some code or other work on github.  You want to incentivize
 
 We learned quite a bit about how to solve this problem while requiring the least trust of users(aka the most trustworthy process).
 
-We concluded that a platform (we built a toy version of that) is the wrong way to go.  We now believe that an open source bitcoin wallet client that understands how to broker discussions with other clients using the blockchain itself is the answer.  A microformat should be developed specifically for bounty work, and demonstrated using that client.  Our final presentation with our conclusions is here: ![MultiBounty Final Presentation](./presentation/mb_presentation.pdf)
+We concluded that a platform (we built a toy version of that) is the wrong way to go.  We now believe that an open source bitcoin wallet client that understands how to broker discussions with other clients using the blockchain itself is the answer.  A microformat should be developed specifically for bounty work, and demonstrated using that client.  Our final presentation with our conclusions is here: [MultiBounty Final Presentation](https://github.com/richbodo/multibounty/blob/master/presentation/mb_presentation.pdf)
 
 Everything below relates to our toy bounty platform project, which we wrote in meteor using block.io as the backend.
 
