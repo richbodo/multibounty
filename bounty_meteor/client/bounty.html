@@ -1,27 +1,38 @@
 <template name="bounty">
 
-    <div style="border: 1px solid #ccc; background-color: #eee;">
-    <b> {{ bounty.username }} offers {{ bounty.bounty_amount }} BTC ( {{ bounty.pending_amount }} pending ) for:</b>
+    {{#if tiny}}
+        <li>
+        <b>{{ bounty.username }} offers {{ bounty.bounty_amount }} BTC for:</b><br/>
+        {{ bounty.bounty_task }}<br/>
+        <a href="{{pathFor route="bounties.show" id=bounty._id}}">details</a>
+        </li>
+    {{else}}
+        <div style="padding: 20px">
 
-    <blockquote>
-    <p>{{ bounty.creative_work }}</p>
-    <p>{{ bounty.bounty_task }}</p>
-    Created At: {{ bounty.createdAt }} <br/>
-    Updated At: {{ bounty.updatedAt }} <br/>
-    <em>To fund this bounty, send test bitcoin to:</em><br/><b>{{ bounty.receiving_address }}</b>
-    </blockquote>
-    
+        <blockquote>
+        <p>{{ bounty.bounty_task }}</p>
+        Created At: {{ bounty.createdAt }} <br/>
+        Updated At: {{ bounty.updatedAt }} <br/>
+        <em>To fund this bounty, send test bitcoin to:</em><br/><b>{{ bounty.receiving_address }}</b>
+        </blockquote>
+        
 
-    {{#if currentUser eq bounty.owner }}
-        {{ submission_count }} Submissions:<br/>
-    	{{#each submissions}}
-    		<blockquote>
-    		{{> submission submission_id=this._id text=this.submission_content bounty_id=bounty._id}}
- 		   	</blockquote>
-    	{{/each}}
-        or <button class="remove">delete this bounty</button>
-   	{{else}}
-        <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
-   	{{/if}}
-   </div>
+        {{#if currentUser eq bounty.owner }}
+            {{ submission_count }} Submissions:<br/>
+        	{{#each submissions}}
+        		<blockquote>
+        		{{> submission submission_id=this._id text=this.submission_content bounty_id=bounty._id}}
+     		   	</blockquote>
+        	{{/each}}
+            or <button class="remove">delete this bounty</button>
+       	{{else}}
+            <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
+       	{{/if}}
+       </div>
+   {{/if}}
+
+
+
+
+
 </template>

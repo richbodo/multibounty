@@ -10,7 +10,7 @@ if (Meteor.isServer) {
 mb = Meteor.bindEnvironment;
 
 Meteor.methods({
-    addBounty: function (creative_work, bounty_task) {
+    addBounty: function (bounty_task) {
         if (Meteor.isServer) {
             console.log("adding a Bounty to the db in meteor method");
             // Make sure the user is logged in before inserting a Bounty
@@ -20,7 +20,6 @@ Meteor.methods({
             var myFuture = new Future();
 
             Bounties.insert({
-                creative_work: creative_work,
                 bounty_task: bounty_task,
                 createdAt: new Date(),
                 owner: Meteor.userId(),

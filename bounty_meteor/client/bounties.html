@@ -1,7 +1,8 @@
 <template name="bounties">
 	<h2>All Bounties <button class="update_the_bounties">Update the Bounties</button></h2>
+	<ul>
     {{#each bounties}}
-        {{> bounty bounty_id=_id}}
-        <a href="{{pathFor route="bounties.show" id=_id}}">details</a>
+        {{> bounty bounty_id=_id tiny=1}}
     {{/each}}
+	</ul>
 </template>
