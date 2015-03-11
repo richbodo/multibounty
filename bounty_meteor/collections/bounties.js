@@ -11,25 +11,31 @@ mb = Meteor.bindEnvironment;
 
 Meteor.methods({
     addBounty: function (creative_work, bounty_task) {
-        console.log("adding a Bounty to the db in meteor method");
-        // Make sure the user is logged in before inserting a Bounty
-        if (!Meteor.userId()) {
-            throw new Meteor.Error("not-authorized");
-        }
-
-        Bounties.insert({
-            creative_work: creative_work,
-            bounty_task: bounty_task,
-            createdAt: new Date(),
-            owner: Meteor.userId(),
-            username: Meteor.user().username
-        }, function(error,bounty_id){
-            if (bounty_id) {
-                Meteor.call('createAddressForBounty',bounty_id);
-            } else {
-                console.log(['err in addBounty', error]);
+        if (Meteor.isServer) {
+            console.log("adding a Bounty to the db in meteor method");
+            // Make sure the user is logged in before inserting a Bounty
+            if (!Meteor.userId()) {
+                throw new Meteor.Error("not-authorized");
             }
-        });
+            var myFuture = new Future();
+
+            Bounties.insert({
+                creative_work: creative_work,
+                bounty_task: bounty_task,
+                createdAt: new Date(),
+                owner: Meteor.userId(),
+                username: Meteor.user().profile.name
+            }, function(error,bounty_id){
+                if (bounty_id) {
+                    Meteor.call('createAddressForBounty',bounty_id);
+                    myFuture.return(bounty_id);
+                } else {
+                    myFuture.throw(error);
+                    console.log(['err in addBounty', error]);
+                }
+            });
+            return myFuture.wait();
+        }
     },
     createAddressForBounty: function(bounty_id) {
         if (Meteor.isServer) {
@@ -93,5 +99,7 @@ Meteor.methods({
         }
 
         Bounties.remove(BountyId);
+        Submissions.remove({bounty_id: BountyId});
+        return true;
     }
 });

@@ -18,3 +18,16 @@ Template.bounty.helpers({
 		return s_list.length;
 	}
 });
+Template.bounty.events({
+	'click .remove' : function(){
+		var bounty_id = this.bounty_id;
+		Meteor.call('deleteBounty',bounty_id,function(error, response){
+			console.log(['called DeleteBounty',bounty_id,error,response]);
+			if (response) {
+				Router.go("bounties.list");
+			} else {
+				console.log('delete failed')
+			}
+		});
+	}
+})

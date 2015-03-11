@@ -3,6 +3,8 @@
 
 
 Meteor.startup(function () {
+    Future = Npm.require('fibers/future');
+
     console.log('starting up');
     var SECRETS = JSON.parse(Assets.getText("secrets.json"));
     console.log(['secrets',SECRETS]);

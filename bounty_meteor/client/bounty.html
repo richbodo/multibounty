@@ -1,4 +1,5 @@
 <template name="bounty">
+
 	<h2>Bounty {{ bounty._id }}</h2>
     Owner: {{ bounty.owner }}<br/>
     Creative Work: {{ bounty.creative_work }} <br/>
@@ -8,15 +9,15 @@
     Updated At: {{ bounty.updatedAt }} <br/>
     Receive Addr: {{ bounty.receiving_address }}<br/>
     # of submissions: {{ submission_count }}<br/>
-    <p>boo
-    ya</p>
+    user:{{ bounty.username }}
+    (<a class="remove">rm</a>)
     <a href="{{pathFor route='submissions.new' id=bounty._id}}">Add a submission</a>
 
     {{#if currentUser eq bounty.owner}}
     	APPROVE submissions
     	{{#each submissions}}
     		<blockquote>
-    		{{> submission submission_id=this._id text=this.submission_content}}
+    		{{> submission submission_id=this._id text=this.submission_content bounty_id=bounty._id}}
  		   	</blockquote>
     	{{/each}}
    	{{else}}
