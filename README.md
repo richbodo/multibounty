@@ -1,7 +1,9 @@
 # multibounty
 #MultiSig Bounty Library
 
-Provides library and examples that use the bitcoin blockchain to solve the following problem:
+NOTE: This is no longer maintained, but the result was mildly interesting - you can't use third party systems with the blockchain and maintain trust unless they are equally transparent and trustless. 
+
+Multibounty provides a library and example that uses the bitcoin blockchain to solve the following problem:
 
 You are an author of some code or other work on github.  You want to incentivize people to do work, such as fix bugs in code, or supply excellent edits to documentation.
 
