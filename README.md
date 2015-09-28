@@ -1,7 +1,7 @@
 # multibounty
 #MultiSig Bounty Library
 
-NOTE: This is no longer maintained, but the result was mildly interesting - you can't use third party systems with the blockchain and maintain trust unless they are equally transparent and trustless. 
+NOTE: This is no longer maintained.  The result of this experimebnt should have been expected.  We were trying to build a trustworthy general-purpose bounty system.  We found that apps combining a blockchain and a third party site/system will not be trustworthy.  Unless all parts of the system are equally transparent and trustless, the system is at most as trusworthy and abuse-resistant as it's weakest link.  This is where most mashups fail.  In the future, more systems will be decentralized and trustworthy - right now the only way to make this is to put a bunch of code into common open-source wallets - that would give everyone the code for the system, and eliminate a central point of trust. 
 
 Multibounty provides a library and example that uses the bitcoin blockchain to solve the following problem:
 
