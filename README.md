@@ -1,11 +1,12 @@
 # multibounty
 #MultiSig Bounty Library
 
+<<<<<<< HEAD
 **NOTE:** This is no longer maintained.  We were trying to build a trustworthy general-purpose bounty system.  We found that apps communicating through a blockchain *and* a third party site/system, will generally be as trustworthy as the least trustworthy link in the communications system.
 
 This is where most blockchain mashups fail.  
 
-The only way to make this project trustworthy would be to add functionality to common open-source wallets - that would give everyone the means to communicate properly through a trusted blockchain, and eliminate a central point of trust. 
+The only way to make a system of this type trustworthy would be to add functionality to common open-source wallets - that would give everyone the means to communicate properly through a trusted blockchain, and eliminate any central points of trust. 
 
 **Summary**
 
@@ -15,7 +16,7 @@ You are an author of some code or other work on github.  You want to incentivize
 
 We learned quite a bit about how to solve this problem while requiring the least trust of users(aka the most trustworthy process).
 
-We concluded that a platform (we built a toy version of that) is the wrong way to go.  We now believe that an open source bitcoin wallet client that understands how to broker discussions with other clients using the blockchain itself is the answer.  A microformat should be developed specifically for bounty work, and demonstrated using that client.  Our final presentation with our conclusions is here: [MultiBounty Final Presentation](https://github.com/richbodo/multibounty/blob/master/presentation/mb_presentation.pdf)
+As stated above, we concluded that a platform (we built a prototype of that) is the wrong way to go.  We now believe that an open source bitcoin wallet client that understands how to broker discussions with other clients using the blockchain itself is the answer.  A microformat should be developed specifically for bounty work, and demonstrated using that client.  Our final presentation with our conclusions is here: [MultiBounty Final Presentation](https://github.com/richbodo/multibounty/blob/master/presentation/mb_presentation.pdf)
 
 Everything below relates to our toy bounty platform project, which we wrote in meteor using block.io as the backend.
 
