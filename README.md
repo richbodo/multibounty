@@ -1,9 +1,11 @@
 # multibounty
 #MultiSig Bounty Library
 
-**NOTE:** This is no longer maintained.  We were trying to build a trustworthy general-purpose bounty system.  We found that apps combining a blockchain and a third party site/system will not be trustworthy.  Of course, unless all parts of the system are equally transparent and trustless, the system is at most as trusworthy and abuse-resistant as it's weakest link.  
+**NOTE:** This is no longer maintained.  We were trying to build a trustworthy general-purpose bounty system.  We found that apps communicating through a blockchain *and* a third party site/system, will generally be as trustworthy as the least trustworthy link in the communications system.
 
-This is where most blockchain mashups fail.  In the future, more systems will be decentralized and trustworthy - right now the only way to make this is to put a bunch of code into common open-source wallets - that would give everyone the code for the system, and eliminate a central point of trust. 
+This is where most blockchain mashups fail.  
+
+The only way to make this project trustworthy would be to add functionality to common open-source wallets - that would give everyone the means to communicate properly through a trusted blockchain, and eliminate a central point of trust. 
 
 **Summary**
 
