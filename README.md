@@ -1,7 +1,6 @@
 # multibounty
 #MultiSig Bounty Library
 
-<<<<<<< HEAD
 **NOTE:** This is no longer maintained.  We were trying to build a trustworthy general-purpose bounty system.  We found that apps communicating through a blockchain *and* a third party site/system, will generally be as trustworthy as the least trustworthy link in the communications system.
 
 This is where most blockchain mashups fail.  
